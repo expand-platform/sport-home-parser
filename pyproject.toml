@@ -1,0 +1,26 @@
+[project]
+name = "sport-home"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Ca-tt",email = "damir96.lukyanenko@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beautifulsoup4 (>=4.13.3,<5.0.0)",
+    "python-dotenv (>=1.0.1,<2.0.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "fastapi (>=0.115.11,<0.116.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "uvicorn (>=0.34.0,<0.35.0)"
+]
+
+
+[tool.poetry]
+package-mode = false
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

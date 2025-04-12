@@ -1,0 +1,10 @@
+data/
+.env
+dumbbells.csv
+dumbbells.json
+dumbbells.txt
+products.txt
+products.csv
+products.json
+sitemap.xml
+sitemap1.xml
