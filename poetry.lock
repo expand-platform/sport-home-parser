@@ -86,14 +86,14 @@ lxml = ["lxml"]
 
 [[package]]
 name = "bot-engine"
-version = "0.1.11"
+version = "0.1.12"
 description = "The universal bot engine framework. Made on top of pytelegrambotapi"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "bot_engine-0.1.11-py3-none-any.whl", hash = "sha256:cd3b66285ae435fed102775b7b8e303f78fb3014bf2ddaa4ac3246cf38d82264"},
-    {file = "bot_engine-0.1.11.tar.gz", hash = "sha256:12727abc54a06407da557e6a9c47a459c1a5af0354840851e51d28856ec694ae"},
+    {file = "bot_engine-0.1.12-py3-none-any.whl", hash = "sha256:f2c6728c2ca80fbb2e109fee1b6ffc9e27e4016820a2b3f0afb25ea9dd14752f"},
+    {file = "bot_engine-0.1.12.tar.gz", hash = "sha256:8b32125e634480fc8c45261adec335ed4dd39d1dba51256bf8208d44cee0c885"},
 ]
 
 [package.dependencies]
