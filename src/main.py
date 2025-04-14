@@ -1,12 +1,16 @@
+from threading import Thread
+from dataclasses import dataclass, field
+
+#? engine
+from bot_engine.server.FastAPIServer import FastAPIServer
 from bot_engine.bot.Bot import Bot
-# from bot_engine.database.Database import Database
 
+#? modules
+from src.bot.BotPlugins import BotPlugins
 
-from src.server.server import Server
 
 bot = Bot()
+plugins = BotPlugins().setup_plugins()
 
-#? Сервер FastAPI работает, под его капотом работает бот.
-#? Следующая задача - начать делать юзерские / админские диалоги и внедрить их в сервер (по факту просто передать их как параметр или переопределить метод класса FastAPIServer)
-server = Server(bot)
-app = server.app
+server = FastAPIServer(bot, plugins)
+app = server._app

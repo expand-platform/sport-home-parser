@@ -86,14 +86,14 @@ lxml = ["lxml"]
 
 [[package]]
 name = "bot-engine"
-version = "0.1.17"
+version = "0.2.1"
 description = "The universal bot engine framework. Made on top of pytelegrambotapi"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "bot_engine-0.1.17-py3-none-any.whl", hash = "sha256:fcd916824e71f34a6490e3c635a45b32b76f49e37856ca3d6fba0fc6e57d52d3"},
-    {file = "bot_engine-0.1.17.tar.gz", hash = "sha256:df17c34be489309680c6f8924cb3544525fb20ab5fb247071283751d4c0a92e9"},
+    {file = "bot_engine-0.2.1-py3-none-any.whl", hash = "sha256:b9c6eb6f65519ebf0a3b40cf2ee1050be63dffe1d04d550b4f81e3d6c069e062"},
+    {file = "bot_engine-0.2.1.tar.gz", hash = "sha256:94517c40b8cdc06d05feca319c71b53f89a6135c15ac86b1d7cd04c1c5eb0f9a"},
 ]
 
 [package.dependencies]
@@ -4329,4 +4329,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "91bde69511d86ba6f9620a903ace5b0566045c5e7774942323d181e7a2e43644"
+content-hash = "a4b84629e550ca7c9ca27d02385e905abb02401ebab9dd0a285c546629d823d5"

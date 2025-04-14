@@ -30,3 +30,6 @@ search:
 
 clear-cache:
 	poetry cache clear pypi --all
+
+ready:
+	git add . && git commit && git push
