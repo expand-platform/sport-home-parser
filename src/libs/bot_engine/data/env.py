@@ -1,10 +1,5 @@
-from os import getenv
-
-if getenv("ENVIRONMENT") == "testing":
-    from utils.Dotenv import Dotenv
-
-else:
-    from bot_engine.utils.Dotenv import Dotenv
+#? engine
+from src.libs.bot_engine.utils.Dotenv import Dotenv
 
 
 dotenv = Dotenv()

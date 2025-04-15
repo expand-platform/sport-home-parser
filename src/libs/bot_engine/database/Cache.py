@@ -1,16 +1,8 @@
-from os import getenv
-
-if getenv("ENVIRONMENT") == "testing":
-    from data.env import ENVIRONMENT, BOT_TOKEN, ADMIN_IDS, SUPER_ADMIN_ID
-    from data.config import USER_ID_KEY
-    from users.UserT import UserT    
-    from users.NewUser import NewUser
-
-else:
-    from bot_engine.data.env import ENVIRONMENT, BOT_TOKEN, ADMIN_IDS, SUPER_ADMIN_ID
-    from bot_engine.data.config import USER_ID_KEY
-    from bot_engine.users.NewUser import NewUser
-    from bot_engine.users.UserT import UserT    
+#? engine
+from src.libs.bot_engine.data.env import ENVIRONMENT, BOT_TOKEN, ADMIN_IDS, SUPER_ADMIN_ID
+from src.libs.bot_engine.data.config import USER_ID_KEY
+from src.libs.bot_engine.users.NewUser import NewUser
+from src.libs.bot_engine.users.UserT import UserT    
 
 
 

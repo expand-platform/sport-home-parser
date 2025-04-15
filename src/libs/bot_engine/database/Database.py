@@ -4,26 +4,15 @@ from datetime import datetime
 from typing import List, Optional
 from telebot.types import Message
 
+#? engine
+from src.libs.bot_engine.data.env import ENVIRONMENT, BOT_TOKEN, ADMIN_IDS, SUPER_ADMIN_ID
+from src.libs.bot_engine.data.config import USER_ID_KEY
+from src.libs.bot_engine.users.UserT import UserT  
 
-if getenv("ENVIRONMENT") == "testing":
-    from data.env import ENVIRONMENT, BOT_TOKEN, ADMIN_IDS, SUPER_ADMIN_ID
-    from data.config import USER_ID_KEY
-    from users.UserT import UserT  
+from src.libs.bot_engine.users.NewUser import NewGuest, NewUser
 
-    from users.NewUser import NewGuest, NewUser
-
-    from database.MongoDB import MongoDB
-    from database.Cache import Cache
-
-else:
-    from bot_engine.data.env import ENVIRONMENT, BOT_TOKEN, ADMIN_IDS, SUPER_ADMIN_ID
-    from bot_engine.data.config import USER_ID_KEY
-    from bot_engine.users.UserT import UserT  
-
-    from bot_engine.users.NewUser import NewGuest, NewUser
-
-    from bot_engine.database.MongoDB import MongoDB
-    from bot_engine.database.Cache import Cache
+from src.libs.bot_engine.database.MongoDB import MongoDB
+from src.libs.bot_engine.database.Cache import Cache
 
 
 

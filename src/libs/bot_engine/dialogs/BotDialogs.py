@@ -1,14 +1,7 @@
-from os import getenv
-
-if getenv("ENVIRONMENT") == "testing":
-    from bot.Bot import Bot
-    from dialogs.DialogGenerator import DialogGenerator
-    from bot_engine.languages.Languages import Languages
-
-else:
-    from bot_engine.bot.Bot import Bot
-    from bot_engine.dialogs.DialogGenerator import DialogGenerator
-    from bot_engine.languages.Languages import Languages
+#? engine
+from src.libs.bot_engine.bot.Bot import Bot
+from src.libs.bot_engine.dialogs.DialogGenerator import DialogGenerator
+from src.libs.bot_engine.languages.Languages import Languages
 
 
 class BotDialogs:

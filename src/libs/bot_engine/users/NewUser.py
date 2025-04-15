@@ -3,13 +3,9 @@ from os import getenv
 from telebot.types import Message
 from datetime import datetime
 
-if getenv("ENVIRONMENT") == "testing":
-    from users.UserT import UserT
-    from bot_engine.languages.Languages import Languages
-
-else:
-    from bot_engine.users.UserT import UserT
-    from bot_engine.languages.Languages import Languages
+#? engine
+from src.libs.bot_engine.users.UserT import UserT
+from src.libs.bot_engine.languages.Languages import Languages
 
 
 

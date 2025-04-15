@@ -1,8 +1,8 @@
 from telebot.types import BotCommand
-from bot_engine.languages.Locale import Locale
+from src.libs.bot_engine.languages.Locale import Locale
 
 UK_LOCALE = Locale(
-    lang="ukr",
+    lang="uk",
     
     menu_commands=[
         BotCommand(command="start", description="Старт")

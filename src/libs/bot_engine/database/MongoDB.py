@@ -1,20 +1,13 @@
-# from calendar import c
-from os import getenv
 from datetime import datetime, timedelta
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 
-if getenv("ENVIRONMENT") == "testing":
-    from data.env import ENVIRONMENT, MONGODB_TOKEN, DATABASE_NAME, REPLICA_NAME, SUPER_ADMIN_ID
-    from data.config import USER_ID_KEY, USER_COLLECTION, DATABASE_CONNECTIONS_LIMIT
-    from users.UserT import UserT
-
-else:
-    from bot_engine.data.env import ENVIRONMENT, MONGODB_TOKEN, DATABASE_NAME, REPLICA_NAME, SUPER_ADMIN_ID
-    from bot_engine.data.config import USER_ID_KEY, USER_COLLECTION,DATABASE_CONNECTIONS_LIMIT
-    from bot_engine.users.UserT import UserT
+#? engine
+from src.libs.bot_engine.data.env import ENVIRONMENT, MONGODB_TOKEN, DATABASE_NAME, REPLICA_NAME, SUPER_ADMIN_ID
+from src.libs.bot_engine.data.config import USER_ID_KEY, USER_COLLECTION,DATABASE_CONNECTIONS_LIMIT
+from src.libs.bot_engine.users.UserT import UserT
 
 
 #! data has to be created manually, but can be add as consts

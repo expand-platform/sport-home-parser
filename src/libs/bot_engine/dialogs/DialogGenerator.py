@@ -1,4 +1,3 @@
-from os import getenv
 from typing import Union
 
 from telebot.types import (
@@ -10,31 +9,19 @@ from telebot.types import (
 )
 from telebot.states.sync.context import StateContext
 
-if getenv("ENVIRONMENT") == "testing":
-    from bot.Bot import Bot
-    from users.UserT import UserT
 
-    from database.MongoDB import MongoDB
+#? bot engine
+from src.libs.bot_engine.bot.Bot import Bot
+from src.libs.bot_engine.users.UserT import UserT
 
-    from bot.Bot import Bot
+from src.libs.bot_engine.database.MongoDB import MongoDB
 
-    from database.Cache import Cache
-    from database.Database import Database
+from src.libs.bot_engine.bot.Bot import Bot
 
-    from bot_engine.languages.Languages import Languages
+from src.libs.bot_engine.database.Cache import Cache
+from src.libs.bot_engine.database.Database import Database
 
-else:
-    from bot_engine.bot.Bot import Bot
-    from bot_engine.users.UserT import UserT
-
-    from bot_engine.database.MongoDB import MongoDB
-
-    from bot_engine.bot.Bot import Bot
-
-    from bot_engine.database.Cache import Cache
-    from bot_engine.database.Database import Database
-
-    from bot_engine.languages.Languages import Languages
+from src.libs.bot_engine.languages.Languages import Languages
 
 
 class DialogGenerator:

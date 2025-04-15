@@ -1,86 +1,84 @@
 from os import getenv
-
 from dataclasses import dataclass, field
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 #? engine
-if getenv("ENVIRONMENT") == "testing":
-    from languages.Languages import Languages
-    from dialogs.DialogGenerator import DialogGenerator
-    from bot.Bot import Bot
-    from database.Database import Database
-
-else:
-    from bot_engine.languages.Languages import Languages
-    from bot_engine.dialogs.DialogGenerator import DialogGenerator
-    from bot_engine.bot.Bot import Bot
-    from bot_engine.database.Database import Database
+from src.libs.bot_engine.languages.Locale import Locale
+from src.libs.bot_engine.dialogs.BotDialogs import BotDialogs
+from src.libs.bot_engine.languages.Languages import Languages
+from src.libs.bot_engine.dialogs.DialogGenerator import DialogGenerator
+from src.libs.bot_engine.bot.Bot import Bot
+from src.libs.bot_engine.database.Database import Database
 
 
-#! Будет передаваться извне
-#? languages
-from src.data.locales.uk import UK_LOCALE
-from src.data.locales.ru import RU_LOCALE
-
-#? modules
-from src.dialogs.AdminDialogs import AdminDialogs
-
-
-#! На самом деле будет хорошо, если я смогу контролировать и кастомизировать всю эту логику из своего кода... 
-#! Вот только как это грамотно сделать...
 
 @dataclass
 class BotConfigs:
-    """ Bot dependencies manager """
-    Bot: Bot
-    Languages: Languages
-    DB: Database
+    """ 
+        Bot dependencies manager. 
+        You can customize this class by extending its methods 
+
+        set_database()
+        set_languages()
+        set_menu_commands()
+        set_dialog_generator()
+        set_bot_dialogs()
+        set_extra_settings()
+
+        or you can use set_all and pass all data there (*future)
+
+    """
+    bot: Bot
+    languages: Languages
+    db: Database
+    dialogGenerator: Optional[DialogGenerator] = None
+    botDialogs: Optional[BotDialogs] = None
 
     
-    def setup_database(self):
+    def set_database(self):
         """ Connects MongoDB, prepares cache """
         # DB = Database()
         pass
 
 
-    def setup_languages(self):
-        """ setup locales and active language """
-        self.Languages.add_locale(UK_LOCALE)
-        self.Languages.add_locale(RU_LOCALE)
+    def set_languages(self, locales: list[Locale], bot_language = "ru"):
+        """ sets locales and active language """
+        for locale in locales:
+            self.languages.add_locale(locale)
 
-        self.Languages.active_lang = "uk"
+        self.languages.active_lang = bot_language
+
 
     def set_menu_commands(self):
         """ Sets bot menu commands """
-        menu_commands = self.Languages.get_menu_commands()
+        menu_commands = self.languages.get_menu_commands()
         
-        self.Bot._bot.set_my_commands([])
-        self.Bot._bot.set_my_commands(menu_commands)
+        self.bot._bot.set_my_commands([])
+        self.bot._bot.set_my_commands(menu_commands)
         print("🔉 Slash commands set!")
 
 
 
-    def setup_dialog_generator(self):
+    def set_dialog_generator(self):
         """ Prepares DialogGenerator for work """
         pass
 
 
-    def setup_dialogs(self):
+    def set_bot_dialogs(self):
         """ Prepares all bot dialogs """
         pass
 
-    def extra_setup(self):
+    def set_extra_settings(self):
         """ You can define your extra setup settings here """
         pass
 
 
-    def setup_plugins(self) -> List[Callable]:
-        """ returns a list of all bot plugin functions """
-        return [
-            self.setup_database,
-            self.setup_languages,
-            self.set_menu_commands,
-            self.setup_dialog_generator,
-            self.setup_dialogs,
-        ]
+    # def set_all_components(self):
+    #     """ all bot plugin functions """
+    #     self.set_database()
+    #     self.set_languages()
+    #     self.set_menu_commands()
+    #     self.set_dialog_generator()
+    #     self.set_bot_dialogs()
+    #     self.set_extra_settings()
 

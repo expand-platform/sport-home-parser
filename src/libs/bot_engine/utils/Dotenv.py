@@ -1,12 +1,12 @@
 from dotenv import dotenv_values
-
+from typing import Union
 
 class Dotenv:
     def __init__(self):
         self.config = dotenv_values(".env")
 
 
-    def get(self, key_name: str):
+    def get(self, key_name: str) -> str:
         dotenv_value = self.config.get(key_name)
 
         if dotenv_value is None:
@@ -20,10 +20,10 @@ class Dotenv:
 
     #? splits string intro array by "," and return stripped strings 
     @staticmethod
-    def get_list(data: str, key_name: str = None):
+    def get_list(data: str, key_name: str = ""):
         items = [item.strip() for item in data.split(",")] 
 
-        if "id" in key_name or "ID" in key_name:
+        if "ids" in key_name or "IDS" in key_name:
             items = [int(item) for item in items]
 
         return items

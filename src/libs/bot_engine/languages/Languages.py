@@ -5,11 +5,8 @@ from typing import ClassVar
 
 from telebot.types import BotCommand
 
-if getenv("ENVIRONMENT") == "testing":
-    from languages.Locale import Locale
-
-else:
-    from bot_engine.languages.Locale import Locale
+#? engine
+from src.libs.bot_engine.languages.Locale import Locale
 
 
 
@@ -30,7 +27,7 @@ class Languages:
         locale = self.languages.get(active_language)
 
         if not locale:
-            raise ValueError(f"Locale '{active_language}' not found.")
+            raise ValueError(f"Locale {active_language} not found.")
         
         return locale.menu_commands
 
