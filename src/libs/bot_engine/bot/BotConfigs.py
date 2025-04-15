@@ -1,12 +1,23 @@
+from os import getenv
+
 from dataclasses import dataclass, field
 from typing import Callable, List
 
 #? engine
-from bot_engine.languages.Languages import Languages
-from bot_engine.dialogs.DialogGenerator import DialogGenerator
-from bot_engine.bot.Bot import Bot
-from bot_engine.database.Database import Database
+if getenv("ENVIRONMENT") == "testing":
+    from languages.Languages import Languages
+    from dialogs.DialogGenerator import DialogGenerator
+    from bot.Bot import Bot
+    from database.Database import Database
 
+else:
+    from bot_engine.languages.Languages import Languages
+    from bot_engine.dialogs.DialogGenerator import DialogGenerator
+    from bot_engine.bot.Bot import Bot
+    from bot_engine.database.Database import Database
+
+
+#! Будет передаваться извне
 #? languages
 from src.data.locales.uk import UK_LOCALE
 from src.data.locales.ru import RU_LOCALE
@@ -15,8 +26,11 @@ from src.data.locales.ru import RU_LOCALE
 from src.dialogs.AdminDialogs import AdminDialogs
 
 
+#! На самом деле будет хорошо, если я смогу контролировать и кастомизировать всю эту логику из своего кода... 
+#! Вот только как это грамотно сделать...
+
 @dataclass
-class BotPlugins:
+class BotConfigs:
     """ Bot dependencies manager """
     Bot: Bot
     Languages: Languages
@@ -53,6 +67,10 @@ class BotPlugins:
 
     def setup_dialogs(self):
         """ Prepares all bot dialogs """
+        pass
+
+    def extra_setup(self):
+        """ You can define your extra setup settings here """
         pass
 
 
