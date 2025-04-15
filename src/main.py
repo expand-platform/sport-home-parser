@@ -28,7 +28,7 @@ bot_configs.set_menu_commands()
 
 
 if __name__ == "__main__":
-    server = BotServer(Bot=bot)
+    server = BotServer(bot=bot)
     server.run()
 
 
