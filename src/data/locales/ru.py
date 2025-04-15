@@ -1,5 +1,6 @@
 from telebot.types import BotCommand
-from src.libs.bot_engine.languages.Locale import Locale
+#? bot engine
+from libs.bot_engine.languages.Locale import Locale
 
 RU_LOCALE = Locale(
     lang="ru",

@@ -5,9 +5,9 @@ from pymongo.collection import Collection
 from pymongo.database import Database
 
 #? engine
-from src.libs.bot_engine.data.env import ENVIRONMENT, MONGODB_TOKEN, DATABASE_NAME, REPLICA_NAME, SUPER_ADMIN_ID
-from src.libs.bot_engine.data.config import USER_ID_KEY, USER_COLLECTION,DATABASE_CONNECTIONS_LIMIT
-from src.libs.bot_engine.users.UserT import UserT
+from libs.bot_engine.data.env import ENVIRONMENT, MONGODB_TOKEN, DATABASE_NAME, REPLICA_NAME, SUPER_ADMIN_ID
+from libs.bot_engine.data.config import USER_ID_KEY, USER_COLLECTION,DATABASE_CONNECTIONS_LIMIT
+from libs.bot_engine.users.UserT import UserT
 
 
 #! data has to be created manually, but can be add as consts

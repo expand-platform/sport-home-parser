@@ -1,8 +1,6 @@
-import signal
+import asyncio
 from threading import Thread
 from dataclasses import dataclass, field
-
-from typing import Callable
 
 import uvicorn
 from fastapi import FastAPI
@@ -10,28 +8,23 @@ from contextlib import asynccontextmanager
 from keyboard import add_hotkey
 
 #? bot engine
-from src.libs.bot_engine.data.env import ENVIRONMENT
-from src.libs.bot_engine.bot.Bot import Bot
-
+from libs.bot_engine.data.env import ENVIRONMENT
+from libs.bot_engine.bot.Bot import Bot
 
 @dataclass
 class FastAPIServer:
-    """FastAPI server with thread & signal handling."""
+    Bot: Bot
 
-    Bot: Bot 
-
-    #? neccessary customizable bot dependencies
-    components: list[Callable] = field(default_factory=list)
-    
-    #? private data
     _app: FastAPI = field(init=False)
     _bot_thread: Thread = field(init=False)
     _hotkey_listener_thread: Thread = field(init=False)
+    _uvicorn_server: uvicorn.Server = field(init=False)
+
+    _is_shutting_down: bool = field(default=False, init=False)
 
 
     def __post_init__(self):
         self._app = FastAPI(lifespan=self._lifespan)
-        self._setup_signal_handlers()
 
 
     @asynccontextmanager
@@ -43,16 +36,15 @@ class FastAPIServer:
         finally:
             self.shutdown()
 
+
     def start_threads(self):
         if ENVIRONMENT in {"development", "testing"}:
             self._start_ctrl_c_listener()
-        
         self._run_bot_components()
 
 
     def _run_bot_components(self):
-
-        self._bot_thread = Thread(target=self.Bot.start, name="BotThread")
+        self._bot_thread = Thread(target=self.Bot.start, name="BotThread", daemon=True)
         self._bot_thread.start()
 
 
@@ -65,21 +57,16 @@ class FastAPIServer:
         add_hotkey("ctrl+c", self.shutdown)
 
 
-    def _setup_signal_handlers(self):
-        signal.signal(signal.SIGINT, self._signal_handler)
-        signal.signal(signal.SIGTERM, self._signal_handler)
-
-
-    def _signal_handler(self, signum, frame):
-        print(f"⚠️ Signal received: {signal.Signals(signum).name}")
-        self.shutdown()
-
-
     def shutdown(self):
-        print("🛑 Shutting down...")
+        if self._is_shutting_down:
+            return
+        self._is_shutting_down = True
 
-        self.Bot.disconnect()
-        # uvicorn.server.Server.should_exit = True
+        print("🛑 Shutting down...")
+        self.Bot.disconnect()  
+
+        if hasattr(self, "_uvicorn_server"):
+            self._uvicorn_server.should_exit = True
 
         if self._hotkey_listener_thread and self._hotkey_listener_thread.is_alive():
             self._hotkey_listener_thread.join()
@@ -88,3 +75,12 @@ class FastAPIServer:
             self._bot_thread.join()
 
         print("❌ FastAPI server stopped.")
+
+
+    def run(self, host="127.0.0.1", port=8000):
+        config = uvicorn.Config(self._app, host=host, port=port)
+        self._uvicorn_server = uvicorn.Server(config)
+        try:
+            asyncio.run(self._uvicorn_server.serve())
+        except KeyboardInterrupt:
+            print("👋 Shutdown complete (graceful KeyboardInterrupt).")

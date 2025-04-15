@@ -3,12 +3,12 @@ from dataclasses import dataclass, field
 from typing import Callable, List, Optional
 
 #? engine
-from src.libs.bot_engine.languages.Locale import Locale
-from src.libs.bot_engine.dialogs.BotDialogs import BotDialogs
-from src.libs.bot_engine.languages.Languages import Languages
-from src.libs.bot_engine.dialogs.DialogGenerator import DialogGenerator
-from src.libs.bot_engine.bot.Bot import Bot
-from src.libs.bot_engine.database.Database import Database
+from libs.bot_engine.languages.Locale import Locale
+from libs.bot_engine.dialogs.BotDialogs import BotDialogs
+from libs.bot_engine.languages.Languages import Languages
+from libs.bot_engine.dialogs.DialogGenerator import DialogGenerator
+from libs.bot_engine.bot.Bot import Bot
+from libs.bot_engine.database.Database import Database
 
 
 

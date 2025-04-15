@@ -1,5 +1,5 @@
 #? bot engine
-from src.libs.bot_engine.dialogs.BotDialogs import BotDialogs
+from libs.bot_engine.dialogs.BotDialogs import BotDialogs
 
 
 class AdminDialogs(BotDialogs):

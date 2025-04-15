@@ -1,12 +1,10 @@
 from typing import Union, TYPE_CHECKING
 from telebot.custom_filters import AdvancedCustomFilter
 from telebot.types import Message, CallbackQuery
-# from telebot import TeleBot
 
 #? engine types
 if TYPE_CHECKING:
-    # from src.libs.bot_engine.bot.Bot import Bot
-    from src.libs.bot_engine.database.Database import Database
+    from libs.bot_engine.database.Database import Database
 
 
 class AccessLevelFilter(AdvancedCustomFilter):

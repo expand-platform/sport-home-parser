@@ -1,14 +1,14 @@
 # simple file commands
-main: 
-	py src/main.py
+run: 
+	python src/main.py
 
 parser: 
-	py src/main.py
+	python src/main.py
 
 
 # run files using server
-run:
-	poetry run uvicorn src.main:app --log-level debug
+# run:
+# 	poetry run uvicorn src.main:app --log-level debug
 
 bot:
 	poetry run uvicorn src.main:app --log-level debug

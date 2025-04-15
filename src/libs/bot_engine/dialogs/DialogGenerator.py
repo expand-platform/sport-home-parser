@@ -5,23 +5,18 @@ from telebot.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton,
     CallbackQuery,
-    BotCommand
 )
 from telebot.states.sync.context import StateContext
 
 
 #? bot engine
-from src.libs.bot_engine.bot.Bot import Bot
-from src.libs.bot_engine.users.UserT import UserT
-
-from src.libs.bot_engine.database.MongoDB import MongoDB
-
-from src.libs.bot_engine.bot.Bot import Bot
-
-from src.libs.bot_engine.database.Cache import Cache
-from src.libs.bot_engine.database.Database import Database
-
-from src.libs.bot_engine.languages.Languages import Languages
+from libs.bot_engine.bot.Bot import Bot
+from libs.bot_engine.users.UserT import UserT
+from libs.bot_engine.database.MongoDB import MongoDB
+from libs.bot_engine.bot.Bot import Bot
+from libs.bot_engine.database.Cache import Cache
+from libs.bot_engine.database.Database import Database
+from libs.bot_engine.languages.Languages import Languages
 
 
 class DialogGenerator:

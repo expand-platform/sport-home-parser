@@ -1,7 +1,7 @@
 #? engine
-from src.libs.bot_engine.bot.Bot import Bot
-from src.libs.bot_engine.dialogs.DialogGenerator import DialogGenerator
-from src.libs.bot_engine.languages.Languages import Languages
+from libs.bot_engine.bot.Bot import Bot
+from libs.bot_engine.dialogs.DialogGenerator import DialogGenerator
+from libs.bot_engine.languages.Languages import Languages
 
 
 class BotDialogs:

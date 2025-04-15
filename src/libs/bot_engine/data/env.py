@@ -1,5 +1,5 @@
 #? engine
-from src.libs.bot_engine.utils.Dotenv import Dotenv
+from libs.bot_engine.utils.Dotenv import Dotenv
 
 
 dotenv = Dotenv()

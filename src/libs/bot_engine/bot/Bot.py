@@ -7,10 +7,10 @@ from telebot.types import InlineKeyboardMarkup
 from telebot.states.sync.middleware import StateMiddleware
 from telebot.custom_filters import StateFilter, IsDigitFilter, TextMatchFilter
 
-# ? engine
-from src.libs.bot_engine.database.Database import Database
-from src.libs.bot_engine.bot.Filters import AccessLevelFilter
-from src.libs.bot_engine.data.env import (
+#? bot engine
+from libs.bot_engine.database.Database import Database
+from libs.bot_engine.bot.Filters import AccessLevelFilter
+from libs.bot_engine.data.env import (
     ENVIRONMENT,
     BOT_TOKEN,
     ADMIN_IDS,
@@ -23,8 +23,10 @@ class Bot:
     db: Database
     _bot: TeleBot = field(init=False)
 
+
     def __post_init__(self):
         self._bot = TeleBot(token=BOT_TOKEN, use_class_middlewares=True)
+
 
     def start(self) -> TeleBot:
         if self._bot:
@@ -43,13 +45,16 @@ class Bot:
 
         return self._bot
 
+
     def disconnect(self) -> None:
         self._bot.stop_bot()
         print("бот выключен ❌")
 
+
     def get_bot_data(self, requested_data: str) -> str:
         all_bot_info = self._bot.get_me()
         return getattr(all_bot_info, requested_data)
+
 
     def set_middleware(self) -> None:
         self._bot.add_custom_filter(StateFilter(self._bot))
@@ -59,12 +64,15 @@ class Bot:
 
         self._bot.setup_middleware(StateMiddleware(self._bot))
 
+
     def tell_admins(self, messages: Union[str, list[str]]):
         for admin_id in ADMIN_IDS:
             self._send_messages(chat_id=admin_id, messages=messages)
 
+
     def tell_super_admin(self, messages: Union[str, list[str]]):
         self._send_messages(chat_id=SUPER_ADMIN_ID, messages=messages)
+
 
     def _send_messages(
         self,
