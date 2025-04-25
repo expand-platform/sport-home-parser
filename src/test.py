@@ -16,7 +16,8 @@ from parser.PageScrapper import PrestaShopScraper
 # with open("dumbbells.txt", "r", encoding="utf-8") as f:
 #     product_urls = [line.strip() for line in f.readlines()]
 
-# scraper = PrestaShopScraper(product_urls, limit=3)
-# scraper.scrape_all_products()
+scraper = PrestaShopScraper(["https://zelart.com.ua/product/7843"], limit=3)
+scraper.scrape_all_products()
 # scraper.save_to_json()
 # scraper.save_to_csv()
+
