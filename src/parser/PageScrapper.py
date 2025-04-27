@@ -75,10 +75,16 @@ class PrestaShopScraper:
 
         soup = BeautifulSoup(html, "html.parser")
 
+        app_component = soup.find(class_= 'app-component')
+        print("app_component:", app_component)
+
         # Extract title
         title = soup.find("h1")
         title = title.text.strip() if title else "No title found"
 
+        # with open('soup.txt', 'w', encoding='utf-8') as f:
+        #     f.write(str(soup))
+        # print("soup:", soup)
         # Extract price
         main_price = soup.find(class_="main-price__value")  # Adjust the class name if needed
         main_price = main_price.text.strip() if main_price else "No price found"
@@ -107,7 +113,7 @@ class PrestaShopScraper:
              "description": description, 
              "url": url}
         )
-        print(f"Title: {title}\nMain price: {main_price}\nWholesale amount: {wholesale_amount}\nWholesale price: {wholesale_price}\nRecommended price: {recommended_price}\nDescription: {description}\nURL: {url}\n")
+        # print(f"Title: {title}\nMain price: {main_price}\nWholesale amount: {wholesale_amount}\nWholesale price: {wholesale_price}\nRecommended price: {recommended_price}\nDescription: {description}\nURL: {url}\n")
 
     def scrape_all_products(self):
         """Scrape all product pages."""
