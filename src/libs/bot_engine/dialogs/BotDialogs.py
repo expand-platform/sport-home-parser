@@ -1,28 +1,27 @@
 #? engine
+from dataclasses import dataclass
 from libs.bot_engine.bot.Bot import Bot
 from libs.bot_engine.dialogs.DialogGenerator import DialogGenerator
 from libs.bot_engine.languages.Languages import Languages
 
-
+@dataclass
 class BotDialogs:
-    def __init__(self, bot: Bot, dialog_generator: DialogGenerator, language: Languages):
-        """
-            Зависимости, которые было у меня ранее: 
-            1. Бот
-            2. Генератор диалогов
-            3. И тексты
-            
-        """
-        self.Bot = bot
-        self.DialogGenerator = dialog_generator
-        self.Language = language    
+    """
+        Dependencies: 
+        1. Bot (for sending messages)
+        2. DialogGenerator
+        3. Languages (for texts)
+    """
+    bot: Bot
+    dialogGenerator: DialogGenerator
+    language: Languages
 
 
-    def set_dialogs(self):
+    def create_dialogs(self):
         """ 
-            Use self.dialog_generator to generate dialogs.
-            For example: 
+            Use self.dialog_generator to generate user / admin dialogs.
             
-            self.DialogGenerator.make_dialog(...)  
+            Example: 
+            self.DialogGenerator.make_dialog(...) (see templates)
         """
         pass

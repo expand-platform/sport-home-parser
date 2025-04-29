@@ -22,9 +22,7 @@ SCHEDULE_DAYS = [
     {"id": 6, "name": "Воскресенье", "lessons": ""},
 ]
 
-#! Previously Time.py
-
-class Time:
+class Schedule:
     def __init__(self):
         self.log = Logger().info
         
@@ -33,7 +31,7 @@ class Time:
         self.bot = Bot()
         self.messages = Language().messages
         
-        self.database = Database()
+        self.database = self.database
         
         
     def set_scheduled_tasks(self):
@@ -67,7 +65,7 @@ class Time:
         
         # updates user under the hood
         # ? no need to do "sync-cache-remote"
-        Database().make_monthly_reset()
+        self.database.make_monthly_reset()
             
         self.log(f"Monthly reset completed 🤙")
         self.bot.tell_admins(messages=self.messages["monthly_data_refresh"]["success"])
@@ -82,7 +80,76 @@ class Time:
         
         self.bot.tell_admins(messages=self.messages["weekly_replica"]["success"])
         
+    
+    #! Вынести в класс Schedule
+    def week_of_month(self, dt):
+        first_day = dt.replace(day=1)
+        date_of_month = dt.day
+        adjusted_dom = date_of_month + first_day.weekday()  # Weekday ranges from 0 (Monday) to 6 (Sunday)
+        return (adjusted_dom - 1) // 7 + 1
+    
+
+    #! Вынести в класс Schedule
+    # def make_monthly_reset(self):
+    #     users = self.get_users()
+        
+    #     for user in users:
+    #         #? reset lessons
+    #         if user["access_level"] == "student":
+    #             self.update_user(user=user, key="done_lessons", new_value=0)
+    #             self.update_user(user=user, key="lessons_left", new_value=user["max_lessons"])
+    #             self.update_user(user=user, key="payment_status", new_value=False)
+            
+    #     print(f"Monthly reset completed 🤙")
+
         
         
+
+class ScheduleDays:
+    def __init__(self, schedule_collection: Collection):
+        self.schedule_collection = schedule_collection
+        self.days = list(schedule_collection.find({}))
+        # print("🐍 self.days", self.days)
+
+    def get_days(self):
+        return list(self.schedule_collection.find({}))
+    
+    #? get scheduled lessons from a specific day
+    def get_schedule(self, day_id: int) -> str: 
+        day = self.schedule_collection.find_one(filter={"id": day_id})
+        print("🐍 day info (mongo): ",day)
+        return day["lessons"] 
+
+    def check_days_integrity(self):
+        if len(self.days) < 7:
+            print("Не все дни в порядке...")
+            self.create_days()
+        else: print("Все 7 дней расписания на месте!")
+
+    #! depends on SCHEDULE_DAYS
+    # def create_days(self):
+    #     for day in SCHEDULE_DAYS:
+    #         self.schedule_collection.insert_one(day)
+    #         print(f"day {day} created in schedule!")
+    
+    #! depends on SCHEDULE_DAYS
+    # def change_day_schedule(self, day_id: int, new_schedule: str):
+    #     self.schedule_collection.update_one(filter={"id": day_id}, update={"$set": {"lessons": new_schedule} })
+    #     print(f"Schedule for { SCHEDULE_DAYS[day_id]["name"]} successfully changed! ")
+
+    def create_schedule_messages(self):
+        days = self.get_days()
+        messages = []
+
+        for day in days:
+            # print(f"day: {day}")
+            if day["lessons"] != "":
+                messages.append(day["lessons"])
+            
+            print("🐍 messages: ",messages)
         
-        
+        return messages
+    
+    def clear_schedule(self):
+        self.schedule_collection.update_many({}, {"$set": {"lessons": ""}})
+        print("Schedule cleared!")

@@ -3,13 +3,22 @@ from libs.bot_engine.dialogs.BotDialogs import BotDialogs
 
 
 class AdminDialogs(BotDialogs):
+    """ creates admin dialogs """
+    def create_dialogs(self):
+        """ 
+            Use self.dialog_generator to generate user / admin dialogs.
+            
+            Example: 
+            self.DialogGenerator.make_dialog(...) (see templates)
+        """
+        messages = self.language.get_messages()
 
-    def set_dialogs(self):
-        self.DialogGenerator.make_dialog(
-            access_level=["user", "admin"],
+        self.dialogGenerator.make_dialog(
+            access_level=["admin", "super_admin"],
             handler_type="command",
             command_name="start",
             
-            #! Разделить на userMessages и adminMessages
-            bot_before_message=self.messages["start"],
+            # formatted_variables=[]
+            bot_before_message=messages["start"],
         )
+        
