@@ -4,6 +4,6 @@ from telebot.types import BotCommand
 
 @dataclass
 class Locale:
-    lang: str
+    language: str
     menu_commands: list[BotCommand]
-    messages: list[dict[str, str]]
+    messages: dict[str, str]

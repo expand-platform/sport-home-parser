@@ -5,13 +5,13 @@ from libs.bot_engine.languages.Locale import Locale
 
 
 UK_LOCALE = Locale(
-    lang="uk",
+    language="uk",
     
     menu_commands=[
         BotCommand(command="start", description="Старт")
     ],
 
-    messages=[
-        {"start": "Привiт, {}! Чудовий день, чи не так?"}
-    ]
+    messages= {
+        "start": "Привiт, {}! Чудовий день, чи не так?",
+    }
 )

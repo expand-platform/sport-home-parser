@@ -13,7 +13,7 @@ from libs.bot_engine.database.Database import Database
 
 
 @dataclass
-class BotConfigs:
+class BotPlugins:
     """ 
         Bot dependencies manager. 
         You can customize this class by extending its methods 
@@ -28,16 +28,17 @@ class BotConfigs:
         or you can use set_all and pass all data there (*future)
 
     """
-    bot: Bot
     languages: Languages
     db: Database
-    dialogGenerator: Optional[DialogGenerator] = None
-    botDialogs: Optional[BotDialogs] = None
+    bot: Bot
+    dialogGenerator: DialogGenerator
+    # BotDialogs: BotDialogs
 
     
     def set_database(self):
-        """ Connects MongoDB, prepares cache """
-        # DB = Database()
+        """ Connects MongoDB, prepares cache for users """
+        #? Prepare users in cache for further interactions  
+        self.db.cache_users()
         pass
 
 
@@ -47,6 +48,8 @@ class BotConfigs:
             self.languages.add_locale(locale)
 
         self.languages.active_lang = bot_language
+        self.languages.set_messages(bot_language)
+        print(f"🌐 {bot_language } language set!")
 
 
     def set_menu_commands(self):
@@ -65,20 +68,10 @@ class BotConfigs:
 
 
     def set_bot_dialogs(self):
-        """ Prepares all bot dialogs """
+        """ Prepares user and admin dialogs """
         pass
 
     def set_extra_settings(self):
         """ You can define your extra setup settings here """
         pass
-
-
-    # def set_all_components(self):
-    #     """ all bot plugin functions """
-    #     self.set_database()
-    #     self.set_languages()
-    #     self.set_menu_commands()
-    #     self.set_dialog_generator()
-    #     self.set_bot_dialogs()
-    #     self.set_extra_settings()
 

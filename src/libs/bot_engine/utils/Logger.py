@@ -1,5 +1,5 @@
 import logging
-from data.env import ENVIRONMENT
+from config.env import ENVIRONMENT
 
 class Logger:
     def __init__(self):

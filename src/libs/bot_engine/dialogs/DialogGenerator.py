@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Union
 
 from telebot.types import (
@@ -11,7 +12,7 @@ from telebot.states.sync.context import StateContext
 
 #? bot engine
 from libs.bot_engine.bot.Bot import Bot
-from libs.bot_engine.users.UserT import UserT
+from libs.bot_engine.users.User import User
 from libs.bot_engine.database.MongoDB import MongoDB
 from libs.bot_engine.bot.Bot import Bot
 from libs.bot_engine.database.Cache import Cache
@@ -19,23 +20,11 @@ from libs.bot_engine.database.Database import Database
 from libs.bot_engine.languages.Languages import Languages
 
 
+@dataclass
 class DialogGenerator:
-    _instance = None
-    _is_initialized = False
-
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
-
-    def __init__(self, guest_slash_commands: dict[str, str] = [], user_slash_commands: dict[str, str] = None, admin_slash_commands: dict[str, str] = None):
-        if not self.__class__._is_initialized:
-            if user_slash_commands is None or admin_slash_commands is None:
-                raise ValueError("🔴 First 'DialogGenerator' class initialization requires menu commands!")
-
-        self.bot = Bot()
-        self.messages = Language().messages
+    bot: Bot
+    languages: Languages
+    database: Database
 
 
     # * generate any /slash commands
@@ -58,7 +47,7 @@ class DialogGenerator:
             commands=[command_name], access_level=access_level
         )
         def handle_command(message: Message):
-            active_user = Database().get_active_user(message)
+            active_user = self.database.get_active_user(message)
 
             if set_slash_command:
                 self.set_slash_commands(active_user)
@@ -77,14 +66,14 @@ class DialogGenerator:
             # ? Messages (before)
             if bot_before_message:
                 self.bot._bot.send_message(
-                    chat_id=active_user["user_id"],
+                    chat_id=active_user.user_id,
                     text=bot_before_message,
                     parse_mode="Markdown",
                 )
 
             if bot_before_multiple_messages:
                 self.bot.send_multiple_messages(
-                    chat_id=active_user["user_id"],
+                    chat_id=active_user.user_id,
                     messages=bot_before_multiple_messages,
                 )
 
@@ -99,14 +88,14 @@ class DialogGenerator:
             # ? After messages
             if bot_after_message:
                 self.bot._bot.send_message(
-                    chat_id=active_user["user_id"],
+                    chat_id=active_user.user_id,
                     text=bot_after_message,
                     parse_mode="Markdown",
                 )
 
             if bot_after_multiple_messages:
                 self.bot.send_multiple_messages(
-                    chat_id=active_user["user_id"], messages=bot_after_multiple_messages
+                    chat_id=active_user.user_id, messages=bot_after_multiple_messages
                 )
 
             if (
@@ -188,6 +177,7 @@ class DialogGenerator:
         def set_custom_command(
             message: Union[Message, CallbackQuery], state: StateContext
         ):
+            print(f"making dialog for command {command_name} with access {access_level}")
             # ? initial data for keyboard reply
             call_data = None
             call_id = None
@@ -207,8 +197,8 @@ class DialogGenerator:
             keyboard: InlineKeyboardMarkup = None
 
             # ? initial user data
-            active_user = Database().get_active_user(message)
-            messages = Language().messages
+            active_user = self.database.get_active_user(message)
+            messages = self.languages.messages
 
             # print("🐍 active_user (step_gen): ",active_user)
 
@@ -283,7 +273,7 @@ class DialogGenerator:
                 print(f"active_user: { active_user }")
 
                 self.bot._bot.send_message(
-                    chat_id=active_user["user_id"],
+                    chat_id=active_user.user_id,
                     text=bot_before_message,
                     reply_markup=keyboard or None,
                     parse_mode="Markdown",
@@ -317,7 +307,7 @@ class DialogGenerator:
                     )
 
                 self.bot._bot.send_message(
-                    chat_id=active_user["user_id"],
+                    chat_id=active_user.user_id,
                     text=bot_after_message,
                     reply_markup=keyboard or None,
                     parse_mode="Markdown",
@@ -353,13 +343,13 @@ class DialogGenerator:
     # * HELPERS
     def send_action_notification(self, active_user: dict, command_name):
         # check if user is admin
-        if active_user["user_id"] in Database().admin_ids:
+        if active_user.user_id in self.database.admin_ids:
             print(
                 f"⚠ Admin here, don't sending notification: { active_user["real_name"] }"
             )
             return
 
-        real_name, last_name = Database().get_real_name(active_user=active_user)
+        real_name, last_name = self.database.get_real_name(active_user=active_user)
         username = active_user.get("username")
 
         #! Теперь нужно будет ещё и уведомлять о нажатых кнопках / вводе и т.д
@@ -371,28 +361,28 @@ class DialogGenerator:
         print(f"{ real_name } зашёл в раздел /{command_name} ✅")
 
 
-    def set_slash_commands(self, active_user):
-        """ sets slash commands depending on a user access level """
-        if active_user["access_level"] == "guest":
-            self.bot._bot.set_my_commands([])
-            self.bot._bot.set_my_commands(commands=self._guest_slash_commands)
+    # def set_slash_commands(self, active_user):
+    #     """ sets slash commands depending on a user access level """
+    #     if active_user.access_level == "guest":
+    #         self.bot._bot.set_my_commands([])
+    #         self.bot._bot.set_my_commands(commands=self._guest_slash_commands)
         
-        if active_user["access_level"] == "user":
-            self.bot._bot.set_my_commands([])
-            self.bot._bot.set_my_commands(commands=self._user_slash_commands)
+    #     if active_user.access_level == "user":
+    #         self.bot._bot.set_my_commands([])
+    #         self.bot._bot.set_my_commands(commands=self._user_slash_commands)
 
-        # if "admin"
-        else:
-            self.bot._bot.set_my_commands([])
-            self.bot._bot.set_my_commands(commands=self._admin_slash_commands)
+    #     # if "admin"
+    #     else:
+    #         self.bot._bot.set_my_commands([])
+    #         self.bot._bot.set_my_commands(commands=self._admin_slash_commands)
 
-        print("😎 slash commands set")
+    #     print("😎 slash commands set")
 
 
     def get_format_variable(self, variable_name: str, active_user: dict):
         match variable_name:
             case "user.real_name":
-                real_name, last_name = Database().get_real_name(active_user=active_user)
+                real_name, last_name = self.database.get_real_name(active_user=active_user)
                 return real_name
 
             case "user.payment_amount":
@@ -409,7 +399,7 @@ class DialogGenerator:
 
 
             case "users.paid_amount":
-                users = Database().get_users()
+                users = self.database.get_users()
 
                 paid_amount = 0
 
@@ -423,7 +413,7 @@ class DialogGenerator:
                 return paid_amount
 
             case "users.unpaid_amount":
-                users = Database().get_users()
+                users = self.database.get_users()
 
                 unpaid_amount = 0
 
@@ -462,7 +452,7 @@ class DialogGenerator:
 
             case "students.count":
                 count = 0
-                users = Database().get_users()
+                users = self.database.get_users()
 
                 for user in users:
                     print(f"user: {user}")
@@ -473,7 +463,7 @@ class DialogGenerator:
 
             # case "students.dollar_amount":
             #     total_sum = 0
-            #     users = Database().get_users()
+            #     users = self.database.get_users()
 
             #     for user in users:
             #         print(f"user: {user}")
@@ -485,7 +475,7 @@ class DialogGenerator:
 
             case "students.uah_amount":
                 total_sum = 0
-                users = Database().get_users()
+                users = self.database.get_users()
 
                 for user in users:
                     print(f"user: {user}")
@@ -500,7 +490,7 @@ class DialogGenerator:
             case "students.average":
                 total_sum = 0
                 count = 0
-                users = Database().get_users()
+                users = self.database.get_users()
 
                 for user in users:
                     print(f"user: {user}")
@@ -558,29 +548,29 @@ class DialogGenerator:
     ):
         match database_method_name:
             case "clean":
-                Database().clean_users()
+                self.database.clean_users()
             
             case "schedule.clear":
-                Database().mongoDB.ScheduleDays.clear_schedule()
+                self.database._database.ScheduleDays.clear_schedule()
 
             case "fill":
-                Database().sync_cache_and_remote_users()
+                self.database.sync_cache_and_remote_users()
 
             case "replicate_users":
                 MongoDB().replicate_collection(collection_name="users")
 
             case "load_replica":
                 MongoDB().load_replica(collection_name="users")
-                Database().update_cache_users()
+                self.database.cache_user()
 
             case "monthly_refresh":
-                Database().make_monthly_reset()
+                self.database.make_monthly_reset()
 
             case "update_lessons":
                 # print(f"updating_lessons...")
-                messages = Language().messages
+                messages = self.languages.messages
 
-                is_report_allowed = Database().check_done_reports_limit(
+                is_report_allowed = self.database.check_done_reports_limit(
                     max_lessons=active_user["max_lessons"],
                     done_lessons=active_user["done_lessons"],
                 )
@@ -590,7 +580,7 @@ class DialogGenerator:
                     formatted_messages = [messages["done"], messages["lessons_left"]]
                     formatted_variables = ["user.real_name", "user.done"]
 
-                    Database().update_lessons(message)
+                    self.database.update_lessons(message)
 
                     self.format_message(
                         messages=formatted_messages,
@@ -634,7 +624,7 @@ class DialogGenerator:
                 user_to_change = Cache().get_user(data_from_state["user_id"])
                 print(f"🐍 user_to_change: {user_to_change}")
 
-                Database().update_user(
+                self.database.update_user(
                     user=user_to_change,
                     key=data_from_state["user_property"],
                     new_value=data_from_state["new_value"],
@@ -646,7 +636,7 @@ class DialogGenerator:
                 user_to_change = Cache().get_user(data_from_state["user_id"])
                 print(f"🐍 user_to_change: {user_to_change}")
 
-                Database().update_user(
+                self.database.update_user(
                     user=user_to_change,
                     key="payment_status",
                     new_value=1,
@@ -673,14 +663,14 @@ class DialogGenerator:
                     print(f"user: {user}")
 
                     if user["access_level"] == category:
-                        Database().update_user(
+                        self.database.update_user(
                             user=user, key=user_property, new_value=new_value
                         )
 
                 print(f"Bulk editor: users updated successfully 😎")
 
             case "show_user":
-                selected_user: UserT = Cache().get_user(
+                selected_user: User = Cache().get_user(
                     user_id=data_from_state["user_id"]
                 )
                 print("🐍 selected_user: ", selected_user)
@@ -706,14 +696,14 @@ class DialogGenerator:
                 )
 
             case "remove_user":
-                Database().remove_user(data_from_state["user_id"])
+                self.database.remove_user(data_from_state["user_id"])
 
             case "schedule.show_day_schedule":
                 print("🐍 data_from_state (choose_db_method)",data_from_state)
                 day_id = data_from_state["day_id"]
                 print("day_id (choose_db_method)", day_id)
                 #? return day schedule
-                day_schedule = Database().mongoDB.ScheduleDays.get_schedule(day_id)
+                day_schedule = self.database._database.ScheduleDays.get_schedule(day_id)
                 print("🐍 day_schedule (text)",day_schedule)
                 
                 if day_schedule == "":
@@ -739,10 +729,10 @@ class DialogGenerator:
                 day_id = data_from_state["day_id"]
                 new_schedule = data_from_state["new_schedule"]
                 
-                Database().mongoDB.ScheduleDays.change_day_schedule(day_id, new_schedule)
+                self.database._database.ScheduleDays.change_day_schedule(day_id, new_schedule)
 
             case "schedule.show_schedule":
-                messages = Database().mongoDB.ScheduleDays.create_schedule_messages()
+                messages = self.database._database.ScheduleDays.create_schedule_messages()
 
                 self.bot.send_multiple_messages(
                     chat_id=message.chat.id,
@@ -935,7 +925,7 @@ class DialogGenerator:
             case "select_users":
                 for user in cache_users:
                     print("🐍user: ", user)
-                    real_name, last_name = Database().get_real_name(active_user=user)
+                    real_name, last_name = self.database.get_real_name(active_user=user)
                     user_id = user["user_id"]
 
                     button_callback_data = (
@@ -972,7 +962,7 @@ class DialogGenerator:
                     if user["access_level"] == "student":
                         print("🐍user: ", user)
 
-                        real_name, last_name = Database().get_real_name(
+                        real_name, last_name = self.database.get_real_name(
                             active_user=user
                         )
                         user_id = user["user_id"]
@@ -1021,7 +1011,7 @@ class DialogGenerator:
             #         keyboard.add(hometask_button)
 
             case "schedule.days_list":
-                days_list = Database().mongoDB.ScheduleDays.get_days()
+                days_list = self.database._database.ScheduleDays.get_days()
                 print("🐍 days_list",days_list)
 
                 for day in days_list:

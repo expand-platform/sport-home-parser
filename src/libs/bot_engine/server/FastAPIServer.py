@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 from keyboard import add_hotkey
 
 #? bot engine
-from libs.bot_engine.data.env import ENVIRONMENT
+from config.env import ENVIRONMENT
 from libs.bot_engine.bot.Bot import Bot
 
 

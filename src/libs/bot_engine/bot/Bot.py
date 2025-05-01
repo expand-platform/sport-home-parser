@@ -10,17 +10,23 @@ from telebot.custom_filters import StateFilter, IsDigitFilter, TextMatchFilter
 #? bot engine
 from libs.bot_engine.database.Database import Database
 from libs.bot_engine.bot.Filters import AccessLevelFilter
-from libs.bot_engine.data.env import (
+from config.env import (
     ENVIRONMENT,
     BOT_TOKEN,
     ADMIN_IDS,
     SUPER_ADMIN_ID,
 )
 
+from libs.bot_engine.languages.Languages import Languages
+
+# if TYPE_CHECKING:
+#     from libs.bot_engine.languages.Languages import Languages
+
 
 @dataclass
 class Bot:
     db: Database
+    languages: Languages
     _bot: TeleBot = field(init=False)
 
 
@@ -60,7 +66,7 @@ class Bot:
         self._bot.add_custom_filter(StateFilter(self._bot))
         self._bot.add_custom_filter(IsDigitFilter())
         self._bot.add_custom_filter(TextMatchFilter())
-        self._bot.add_custom_filter(AccessLevelFilter(self.db))
+        self._bot.add_custom_filter(AccessLevelFilter(self.db, self.languages))
 
         self._bot.setup_middleware(StateMiddleware(self._bot))
 
